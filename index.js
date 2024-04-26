@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config();
@@ -39,7 +39,10 @@ async function run() {
   try {
     // call of default art 
     const database =  client.db('default-art')
+    // collection for art-1
     const artcollection =  database.collection('art-1')
+    // collection for art-2
+    const artcollection2 =  database.collection('art-2')
 
     app.get('/art-1', async(req, res) => {
       const result = await artcollection.find().toArray()
@@ -49,10 +52,32 @@ async function run() {
       const result = await artcollection.insertOne(req.body)
       res.json(result)
     })
+    app.get('/art-1/:id', async(req, res) => {
+      const id = req.params.id
+      const quary = {_id: new ObjectId(id)}
+      const result = await artcollection.findOne(quary)
+      res.send(result)
+    })
 
 
+    // req for all user collection
+    app.get('/art-2', async(req, res) =>{
+      const result = await artcollection2.find().toArray()
+      res.send(result)
+    })
 
+    app.get('/art-2/:email', async(req, res)=>{
+      const email = req.body
+      console.log(email)
+      const quary = {user_email: email}
+      const result = await artcollection2.find(quary)
+      res.send(result)
+    })
 
+    app.post("/art-2", async (req,res) =>{
+      const result = await artcollection2.insertOne(req.body)
+      res.json(result)
+    })
 
 
 
