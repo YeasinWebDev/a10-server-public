@@ -39,9 +39,16 @@ async function run() {
   try {
     // call of default art 
     const database =  client.db('default-art')
-    const collection =  database.collection('art-1')
+    const artcollection =  database.collection('art-1')
 
-
+    app.get('/art-1', async(req, res) => {
+      const result = await artcollection.find().toArray()
+      res.send(result)
+    })
+    app.post('/art-1', async(req, res) => {
+      const result = await artcollection.insertOne(req.body)
+      res.json(result)
+    })
 
 
 
