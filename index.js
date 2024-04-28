@@ -70,7 +70,7 @@ async function run() {
         res.send(result);
         return
       }
-      
+
       try {
         const query = { user_email: email };
         const result = await artcollection2.find(query).toArray();
@@ -91,6 +91,13 @@ async function run() {
 
     app.post("/art-2", async (req, res) => {
       const result = await artcollection2.insertOne(req.body)
+      res.send(result)
+    })
+
+    app.delete('/art-2/:id', async (req, res) => {
+      const id = req.params.id
+      const quary = { _id: new ObjectId(id) }
+      const result = await artcollection2.deleteOne(quary)
       res.send(result)
     })
 
