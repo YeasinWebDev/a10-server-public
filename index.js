@@ -11,8 +11,6 @@ app.use(express.json())
 
 app.listen(PORT)
 
-// a-10
-// aeWZHUAqE3IjavWA
 
 const username = process.env.DB_USERNAME;
 const password = process.env.DB_PASSWORD;
@@ -45,6 +43,8 @@ async function run() {
     const artcollection2 = database.collection('art-2')
     // artists collection 
     const artistscollection = database.collection('artists')
+    // SubCategory collection 
+    const subCategorycollection = database.collection('subCategory')
 
     app.get('/art-1', async (req, res) => {
       const result = await artcollection.find().toArray()
@@ -76,7 +76,7 @@ async function run() {
 
       try {
         const query = { user_email: email };
-        if(filter){
+        if (filter) {
           query.customization = filter;
         }
         const result = await artcollection2.find(query).toArray();
@@ -136,6 +136,30 @@ async function run() {
       res.send(result)
     })
 
+    // SubCategory collection requests
+    app.get('/subCategory', async (req, res) => {
+      try {
+        const subCategory = req.query.subCategory;
+        const query = { subcategory_name: subCategory };
+        const result = await subCategorycollection.find(query).toArray();
+        res.send(result);
+      } catch (error) {
+        console.error(error); 
+      }
+    });
+    
+    
+    app.post('/subCategory', async (req, res) => {
+      const result = await subCategorycollection.insertOne(req.body)
+      res.send(result)
+    })
+    app.get('/subCategory/:id', async (req, res) => {
+      const id = req.params.id
+      const quary = { _id: new ObjectId(id) }
+      const result = await subCategorycollection.findOne(quary)
+      res.send(result)
+    })
+
 
 
 
@@ -147,7 +171,7 @@ async function run() {
 
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
