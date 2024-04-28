@@ -61,11 +61,11 @@ async function run() {
 
 
     // req for all user collection
-   
+
     app.get('/art-2', async (req, res) => {
       const email = req.query.email;
       const allData = req.query.all;
-      if(allData){
+      if (allData) {
         const result = await artcollection2.find().toArray();
         res.send(result);
         return
@@ -76,7 +76,7 @@ async function run() {
         const result = await artcollection2.find(query).toArray();
         res.send(result);
       } catch (error) {
-        console.error( error);
+        console.error(error);
       }
     });
 
@@ -94,6 +94,29 @@ async function run() {
       res.send(result)
     })
 
+    app.put('/art-2/:id', async (req, res) => {
+      const id = req.params.id
+      const quary = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updateData = {
+        $set: {
+          user_name: req.body.user_name,
+          user_email: req.body.user_email,
+          image: req.body.image,
+          item_name: req.body.item_name,
+          subcategory_name: req.body.subcategory_name,
+          short_des: req.body.short_des,
+          price: req.body.price,
+          rating: req.body.rating,
+          processing_time: req.body.processing_time,
+          customization: req.body.customization,
+          stock_status: req.body.stock_status
+        }
+      }
+      const result = await artcollection2.updateOne(quary, updateData, options)
+      res.send(result)
+    })
+
     app.delete('/art-2/:id', async (req, res) => {
       const id = req.params.id
       const quary = { _id: new ObjectId(id) }
@@ -101,7 +124,7 @@ async function run() {
       res.send(result)
     })
 
-   
+
 
 
 
