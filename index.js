@@ -43,6 +43,8 @@ async function run() {
     const artcollection = database.collection('art-1')
     // collection for art-2
     const artcollection2 = database.collection('art-2')
+    // artists collection 
+    const artistscollection = database.collection('artists')
 
     app.get('/art-1', async (req, res) => {
       const result = await artcollection.find().toArray()
@@ -60,11 +62,12 @@ async function run() {
     })
 
 
-    // req for all user collection
+    // req for art-2 collection requests
 
     app.get('/art-2', async (req, res) => {
       const email = req.query.email;
       const allData = req.query.all;
+      const filter = req.query.filter;
       if (allData) {
         const result = await artcollection2.find().toArray();
         res.send(result);
@@ -73,14 +76,15 @@ async function run() {
 
       try {
         const query = { user_email: email };
+        if(filter){
+          query.customization = filter;
+        }
         const result = await artcollection2.find(query).toArray();
         res.send(result);
       } catch (error) {
         console.error(error);
       }
     });
-
-
 
     app.get('/art-2/:id', async (req, res) => {
       const id = req.params.id
@@ -125,6 +129,12 @@ async function run() {
     })
 
 
+
+    // artists collection requests
+    app.get('/artists', async (req, res) => {
+      const result = await artistscollection.find().toArray()
+      res.send(result)
+    })
 
 
 
